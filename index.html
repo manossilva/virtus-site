@@ -126,6 +126,18 @@
         .btn-attention {
             animation: pulse-attention 2s infinite;
         }
+
+        /* Animação para o Accordion (FAQ) */
+        .faq-content {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .faq-content.open {
+            max-height: 500px; /* altura suficiente para o texto */
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -156,6 +168,42 @@
             ],
             whatsappNumber: "557998118731", 
             whatsappMessage: "Olá! Quero comprar minha casa no Villa Verde.",
+            
+            // Dados do FAQ
+            faqData: [
+                {
+                    pergunta: "Quais são as casas disponíveis?",
+                    resposta: "Temos opções excelentes de casas com e sem suíte, projetadas para o seu conforto e da sua família. Você pode conferir os detalhes clicando no botão 'Ver Projeto PDF' acima."
+                },
+                {
+                    pergunta: "Quanto custa cada casa?",
+                    resposta: "Os valores variam de acordo com a planta escolhida (com ou sem suíte) e a disponibilidade. Recomendamos que você faça uma simulação no final da página para receber nossa tabela atualizada e as condições de pagamento."
+                },
+                {
+                    pergunta: "Como funciona a entrada para pegar a casa?",
+                    resposta: "A entrada é facilitada! Em muitos casos, se você tiver FGTS acumulado e dependendo do seu perfil de renda, o subsídio do governo pode cobrir quase toda a entrada. Venha fazer uma simulação para vermos o seu caso específico."
+                },
+                {
+                    pergunta: "Quantos anos dura o financiamento?",
+                    resposta: "Pela Caixa Econômica Federal (programa Minha Casa Minha Vida), o financiamento pode chegar a até 35 anos (420 meses), garantindo parcelas suaves que cabem no seu bolso."
+                },
+                {
+                    pergunta: "Posso financiar sozinho?",
+                    resposta: "Sim, com certeza! É perfeitamente possível financiar sozinho, desde que sua renda comprove a capacidade de pagamento das parcelas. Se preferir, você também pode compor renda com outra pessoa."
+                },
+                {
+                    pergunta: "O que é considerado dependente?",
+                    resposta: "No financiamento, dependente é alguém que depende financeiramente de você, como filhos menores de idade, esposa/marido sem renda, ou em alguns casos, os pais. Ter dependentes pode ajudar a aumentar o seu subsídio!"
+                },
+                {
+                    pergunta: "O que é subsídio?",
+                    resposta: "Subsídio é uma ajuda financeira, um 'desconto' que o Governo Federal dá (através do Minha Casa Minha Vida) para ajudar você a pagar parte da sua casa. O melhor: você não precisa devolver esse dinheiro depois!"
+                },
+                {
+                    pergunta: "O valor da parcela aumenta com o tempo?",
+                    resposta: "Não! Trabalhamos com financiamentos onde, na maioria dos casos (como a tabela SAC), as parcelas são decrescentes, ou seja, elas vão diminuindo ou se mantendo estáveis ao longo dos anos, para sua total segurança."
+                }
+            ]
         };
 
         const Icon = ({ name, className }) => {
@@ -166,6 +214,28 @@
                 }
             }, [name]);
             return <i ref={iconRef} data-lucide={name} className={className}></i>;
+        };
+
+        // Componente do Accordion (FAQ)
+        const FAQItem = ({ faq, isOpen, onClick }) => {
+            return (
+                <div className="glass rounded-2xl mb-3 border border-white/10 overflow-hidden">
+                    <button 
+                        className="w-full text-left px-5 py-4 flex justify-between items-center hover:bg-white/5 transition-colors"
+                        onClick={onClick}
+                    >
+                        <span className="font-bold text-white text-sm md:text-base pr-4">{faq.pergunta}</span>
+                        <div className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+                            <Icon name="chevron-down" className="w-5 h-5 text-brand-main" />
+                        </div>
+                    </button>
+                    <div className={`faq-content ${isOpen ? 'open' : ''}`}>
+                        <div className="px-5 pb-4 text-white/70 font-light text-sm md:text-base leading-relaxed border-t border-white/5 pt-3">
+                            {faq.resposta}
+                        </div>
+                    </div>
+                </div>
+            );
         };
 
         const FloatingWhatsApp = () => {
@@ -290,6 +360,7 @@
             const [menuOpen, setMenuOpen] = useState(false);
             const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
             const [pdfType, setPdfType] = useState('semSuite'); 
+            const [openFaqIndex, setOpenFaqIndex] = useState(null); // Controle do FAQ
             const [formData, setFormData] = useState({ nome: '', cpf: '', dataNascimento: '', renda: '', telefone: '', dependentes: 'Não', fgts: 'Não' });
 
             useEffect(() => {
@@ -315,6 +386,10 @@
                 }
             };
 
+            const toggleFaq = (index) => {
+                setOpenFaqIndex(openFaqIndex === index ? null : index);
+            };
+
             const handleInputChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
             const handleFormSubmit = (e) => {
@@ -327,7 +402,6 @@
                 <div className="min-h-screen flex flex-col font-sans overflow-x-hidden relative">
                     <FloatingWhatsApp />
 
-                    {/* MODAL DO PDF ATUALIZADO */}
                     {isPdfModalOpen && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-6 bg-black/90 backdrop-blur-sm" onClick={() => setIsPdfModalOpen(false)}>
                             <div className="glass-dark border border-white/20 p-4 md:p-6 rounded-3xl w-full max-w-5xl h-[90vh] flex flex-col relative modal-enter shadow-2xl" onClick={e => e.stopPropagation()}>
@@ -345,8 +419,6 @@
                                 </div>
 
                                 <div className="flex-1 bg-white rounded-2xl overflow-hidden relative flex flex-col w-full h-full">
-                                    
-                                    {/* PLANO B PARA MOBILE: Botão para abrir nativamente */}
                                     <a 
                                         href={CONFIG.projetosPdf[pdfType]} 
                                         target="_blank" 
@@ -357,7 +429,6 @@
                                         Se a página não rolar no celular, clique aqui
                                     </a>
 
-                                    {/* CONTAINER CORRIGIDO PARA ROLAGEM */}
                                     <div className="flex-1 relative w-full h-full" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
                                         <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 bg-gray-100 -z-10">
                                             <Icon name="loader" className="w-8 h-8 animate-spin mb-2 text-brand-main" />
@@ -365,7 +436,6 @@
                                         </div>
                                         <iframe src={CONFIG.projetosPdf[pdfType]} className="w-full h-full absolute top-0 left-0 border-0" title="Visualizador PDF"></iframe>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -464,7 +534,8 @@
 
                     <section id="villa-verde" className="py-16 md:py-24 relative">
                         <div className="container mx-auto px-4 md:px-6">
-                            <div className="glass rounded-[2rem] p-6 md:p-12 relative overflow-hidden shadow-2xl border-white/10">
+                            {/* Bloco principal do Villa Verde */}
+                            <div className="glass rounded-[2rem] p-6 md:p-12 relative overflow-hidden shadow-2xl border-white/10 mb-12">
                                 <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-b from-brand-main/10 to-transparent pointer-events-none"></div>
                                 <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12 relative z-10">
                                     <div className="w-full lg:w-1/2 flex justify-center">
@@ -481,7 +552,7 @@
                                             <span className="px-3 py-1 bg-yellow-400 text-yellow-900 rounded-full text-xs font-bold uppercase tracking-wide flex items-center gap-1 shadow-lg"><Icon name="home" className="w-3 h-3" /> Minha Casa Minha Vida</span>
                                         </div>
                                         <h2 className="text-3xl md:text-5xl font-bold mb-6 leading-tight">Residencial <br/><span className="text-brand-main">Villa Verde</span></h2>
-                                        <p className="text-white/80 text-lg mb-8 font-light">Onde a arquitetura moderna abraça a natureza. Um refúgio de tranquilidade projetado para o seu bem-estar com condições imperdíveis.</p>
+                                        <p className="text-white/80 text-lg mb-8 font-light">Onde a arquitetura moderna abraça a natureza. Um refúgio de tranquilidade projetado para o seu bem-estar com condições imperdíveis em Tobias Barreto.</p>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
                                             {["Financiamento Facilitado", "Subsídio do Governo", "Lazer Completo", "Segurança 24h"].map((feature, i) => (
                                                 <div key={i} className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5 hover:border-brand-main/30 transition-colors">
@@ -504,6 +575,58 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            {/* Seção FAQ e Mapa dividida em duas colunas no Desktop */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                                
+                                {/* Coluna FAQ */}
+                                <div>
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="w-10 h-10 rounded-full bg-brand-main/20 flex items-center justify-center border border-brand-main/30">
+                                            <Icon name="help-circle" className="text-brand-main w-5 h-5" />
+                                        </div>
+                                        <h3 className="text-2xl md:text-3xl font-bold text-white">Dúvidas Frequentes</h3>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        {CONFIG.faqData.map((faq, index) => (
+                                            <FAQItem 
+                                                key={index} 
+                                                faq={faq} 
+                                                isOpen={openFaqIndex === index} 
+                                                onClick={() => toggleFaq(index)} 
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Coluna Mapa */}
+                                <div className="flex flex-col">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="w-10 h-10 rounded-full bg-brand-main/20 flex items-center justify-center border border-brand-main/30">
+                                            <Icon name="map-pin" className="text-brand-main w-5 h-5" />
+                                        </div>
+                                        <h3 className="text-2xl md:text-3xl font-bold text-white">Localização</h3>
+                                    </div>
+                                    <div className="glass rounded-2xl border border-white/10 overflow-hidden h-[400px] md:h-full min-h-[400px] shadow-lg relative group">
+                                        <iframe 
+                                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31355.704288075736!2d-38.016335199999994!3d-11.1834244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x712a32c2869dfeb%3A0xc0f17173bca04a11!2sTobias%20Barreto%2C%20SE%2C%2048300-000!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr" 
+                                            width="100%" 
+                                            height="100%" 
+                                            style={{ border: 0 }} 
+                                            allowFullScreen="" 
+                                            loading="lazy" 
+                                            referrerPolicy="no-referrer-when-downgrade"
+                                            className="opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                                            title="Mapa de Tobias Barreto"
+                                        ></iframe>
+                                        <div className="absolute bottom-4 left-4 right-4 bg-brand-dark/90 backdrop-blur-md p-4 rounded-xl border border-brand-main/30 text-center">
+                                            <p className="text-white font-bold text-sm">Residencial Villa Verde</p>
+                                            <p className="text-white/70 text-xs mt-1">Região de Tobias Barreto - SE</p>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </section>
