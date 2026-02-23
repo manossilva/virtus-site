@@ -119,18 +119,12 @@
             to { opacity: 1; transform: scale(1); }
         }
 
-        /* NOVA ANIMAÇÃO: Botão de Atenção do PDF */
         @keyframes pulse-attention {
             0%, 100% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
             50% { transform: scale(1.03); box-shadow: 0 0 25px rgba(255, 255, 255, 0.7); }
         }
         .btn-attention {
             animation: pulse-attention 2s infinite;
-        }
-        
-        /* CORREÇÃO MOBILE: Suavidade no scroll do iframe */
-        .pdf-container {
-            -webkit-overflow-scrolling: touch;
         }
     </style>
 </head>
@@ -298,15 +292,12 @@
             const [pdfType, setPdfType] = useState('semSuite'); 
             const [formData, setFormData] = useState({ nome: '', cpf: '', dataNascimento: '', renda: '', telefone: '', dependentes: 'Não', fgts: 'Não' });
 
-            // 1. CORREÇÃO MOBILE: Travar o scroll da página quando o modal do PDF abrir
             useEffect(() => {
                 if (isPdfModalOpen) {
                     document.body.style.overflow = 'hidden';
                 } else {
                     document.body.style.overflow = '';
                 }
-                
-                // Limpeza caso o componente desmonte
                 return () => { document.body.style.overflow = ''; };
             }, [isPdfModalOpen]);
 
@@ -336,6 +327,7 @@
                 <div className="min-h-screen flex flex-col font-sans overflow-x-hidden relative">
                     <FloatingWhatsApp />
 
+                    {/* MODAL DO PDF ATUALIZADO */}
                     {isPdfModalOpen && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-6 bg-black/90 backdrop-blur-sm" onClick={() => setIsPdfModalOpen(false)}>
                             <div className="glass-dark border border-white/20 p-4 md:p-6 rounded-3xl w-full max-w-5xl h-[90vh] flex flex-col relative modal-enter shadow-2xl" onClick={e => e.stopPropagation()}>
@@ -352,13 +344,28 @@
                                     </div>
                                 </div>
 
-                                {/* Container com scroll suave pra dispositivos touch */}
-                                <div className="flex-1 bg-white rounded-2xl overflow-hidden relative pdf-container w-full h-full">
-                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 bg-gray-100">
-                                        <Icon name="loader" className="w-8 h-8 animate-spin mb-2 text-brand-main" />
-                                        <p>Carregando documento...</p>
+                                <div className="flex-1 bg-white rounded-2xl overflow-hidden relative flex flex-col w-full h-full">
+                                    
+                                    {/* PLANO B PARA MOBILE: Botão para abrir nativamente */}
+                                    <a 
+                                        href={CONFIG.projetosPdf[pdfType]} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="bg-brand-accent text-brand-dark p-3 text-center text-sm md:text-base font-bold flex justify-center items-center gap-2 hover:bg-brand-main hover:text-white transition-colors z-20 border-b border-gray-200"
+                                    >
+                                        <Icon name="external-link" className="w-5 h-5" />
+                                        Se a página não rolar no celular, clique aqui
+                                    </a>
+
+                                    {/* CONTAINER CORRIGIDO PARA ROLAGEM */}
+                                    <div className="flex-1 relative w-full h-full" style={{ overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}>
+                                        <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-500 bg-gray-100 -z-10">
+                                            <Icon name="loader" className="w-8 h-8 animate-spin mb-2 text-brand-main" />
+                                            <p>Carregando documento...</p>
+                                        </div>
+                                        <iframe src={CONFIG.projetosPdf[pdfType]} className="w-full h-full absolute top-0 left-0 border-0" title="Visualizador PDF"></iframe>
                                     </div>
-                                    <iframe src={CONFIG.projetosPdf[pdfType]} className="w-full h-full relative z-10 border-0"></iframe>
+
                                 </div>
                             </div>
                         </div>
@@ -488,7 +495,6 @@
                                                 Simular Financiamento <Icon name="calculator" className="w-5 h-5" />
                                             </button>
                                             
-                                            {/* 2. ATUALIZAÇÃO: Botão PDF destacado com animação de pulso e fundo branco */}
                                             <button 
                                                 onClick={() => setIsPdfModalOpen(true)}
                                                 className="flex-1 bg-white text-brand-dark px-6 py-4 rounded-xl font-extrabold shadow-lg hover:scale-105 transition-all flex items-center justify-center gap-2 ring-4 ring-white/30 btn-attention"
