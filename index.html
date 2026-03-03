@@ -132,7 +132,6 @@
             animation: pulse-attention 2s infinite;
         }
 
-        /* Animação para o Accordion (FAQ) */
         .faq-content {
             transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
             max-height: 0;
@@ -140,7 +139,7 @@
             overflow: hidden;
         }
         .faq-content.open {
-            max-height: 500px; /* altura suficiente para o texto */
+            max-height: 500px;
             opacity: 1;
         }
     </style>
@@ -174,7 +173,6 @@
             whatsappNumber: "557998118731", 
             whatsappMessage: "Olá! Quero comprar minha casa no Villa Verde.",
             
-            // Dados do FAQ
             faqData: [
                 {
                     pergunta: "Quais são as casas disponíveis?",
@@ -221,7 +219,51 @@
             return <i ref={iconRef} data-lucide={name} className={className}></i>;
         };
 
-        // Componente do Accordion (FAQ)
+        // Componente da Tela Inicial (Link Tree)
+        const InitialScreen = ({ onEnterSite }) => {
+            return (
+                <div className="min-h-screen flex flex-col justify-center items-center px-4 relative fade-in-up">
+                    <div className="absolute top-[20%] left-[50%] -translate-x-1/2 w-[300px] h-[300px] bg-brand-main rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse"></div>
+                    
+                    <img src={CONFIG.logoUrl} alt="Virtus" className="h-28 md:h-40 object-contain mb-12 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] z-10" />
+                    
+                    <div className="w-full max-w-md flex flex-col gap-4 z-10">
+                        {/* Botão 1: WhatsApp */}
+                        <a href={`https://wa.me/${CONFIG.whatsappNumber}?text=Olá! Gostaria de falar com o time.`} target="_blank" rel="noopener noreferrer" className="glass p-4 rounded-2xl flex items-center gap-5 hover:bg-white/10 transition-all hover:scale-[1.02] border border-white/10 shadow-lg group">
+                            <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center p-2 group-hover:bg-brand-whatsapp/20 transition-colors">
+                                {/* DICA PARA OS ÍCONES DO FLATICON: 
+                                    Para usar a imagem do Flaticon, apague a linha do <Icon ... /> abaixo e cole o seguinte código:
+                                    <img src="URL_DO_SEU_ICONE_AQUI" alt="WhatsApp" className="w-full h-full object-contain" /> 
+                                */}
+                                <Icon name="message-circle" className="w-7 h-7 text-brand-whatsapp" />
+                            </div>
+                            <span className="font-bold text-white text-lg">Falar com nosso time</span>
+                        </a>
+
+                        {/* Botão 2: Site Completo */}
+                        <button onClick={onEnterSite} className="glass p-4 rounded-2xl flex items-center gap-5 hover:bg-white/10 transition-all hover:scale-[1.02] border border-white/10 shadow-lg group text-left w-full">
+                            <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center p-2 group-hover:bg-brand-main/20 transition-colors">
+                                {/* DICA PARA OS ÍCONES DO FLATICON: Substitua a linha abaixo caso queira a sua imagem */}
+                                <Icon name="layout" className="w-7 h-7 text-brand-main" />
+                            </div>
+                            <span className="font-bold text-white text-lg">Nosso site com todas informações</span>
+                        </button>
+
+                        {/* Botão 3: Maps */}
+                        <a href="https://maps.google.com/?q=Av.+Getúlio+Vargas,+600+-+Centro,+Tobias+Barreto,+SE" target="_blank" rel="noopener noreferrer" className="glass p-4 rounded-2xl flex items-center gap-5 hover:bg-white/10 transition-all hover:scale-[1.02] border border-white/10 shadow-lg group">
+                            <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center p-2 group-hover:bg-blue-500/20 transition-colors">
+                                {/* DICA PARA OS ÍCONES DO FLATICON: Substitua a linha abaixo caso queira a sua imagem */}
+                                <Icon name="map-pin" className="w-7 h-7 text-blue-500" />
+                            </div>
+                            <span className="font-bold text-white text-lg">Nosso endereço</span>
+                        </a>
+                    </div>
+                    
+                    <p className="absolute bottom-8 text-white/40 text-sm">© 2024 Virtus Projetos.</p>
+                </div>
+            );
+        };
+
         const FAQItem = ({ faq, isOpen, onClick }) => {
             return (
                 <div className="glass rounded-2xl mb-3 border border-white/10 overflow-hidden">
@@ -361,11 +403,15 @@
         };
 
         const App = () => {
+            // Controle da Tela Inicial
+            const [showInitialScreen, setShowInitialScreen] = useState(true);
+            
+            // Controles do Site Principal
             const [isScrolled, setIsScrolled] = useState(false);
             const [menuOpen, setMenuOpen] = useState(false);
             const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
             const [pdfType, setPdfType] = useState('semSuite'); 
-            const [openFaqIndex, setOpenFaqIndex] = useState(null); // Controle do FAQ
+            const [openFaqIndex, setOpenFaqIndex] = useState(null); 
             const [formData, setFormData] = useState({ nome: '', cpf: '', dataNascimento: '', renda: '', telefone: '', dependentes: 'Não', fgts: 'Não' });
 
             useEffect(() => {
@@ -403,8 +449,14 @@
                 window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(mensagem)}`, '_blank');
             };
 
+            // Se o estado inicial for true, mostra a tela dos 3 botões
+            if (showInitialScreen) {
+                return <InitialScreen onEnterSite={() => setShowInitialScreen(false)} />;
+            }
+
+            // O retorno do site principal
             return (
-                <div className="min-h-screen flex flex-col font-sans overflow-x-hidden relative">
+                <div className="min-h-screen flex flex-col font-sans overflow-x-hidden relative fade-in-up">
                     <FloatingWhatsApp />
 
                     {isPdfModalOpen && (
@@ -481,7 +533,7 @@
                     <section id="home" className="relative min-h-screen flex flex-col justify-center items-center pt-24 pb-12 px-4 md:px-6">
                         <div className="absolute top-[-20%] left-[-10%] w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-brand-main rounded-full mix-blend-screen filter blur-[120px] opacity-20 animate-pulse"></div>
                         <div className="container mx-auto z-10 text-center relative">
-                            <div className="mb-12 fade-in-up flex flex-col items-center">
+                            <div className="mb-12 flex flex-col items-center">
                                 <div className="inline-block px-4 py-1 rounded-full glass border border-brand-main/30 text-brand-main text-xs font-bold tracking-[0.2em] uppercase mb-8 shadow-lg">Excelência em Construção</div>
                                 <img src={CONFIG.logoUrl} alt="VIRTUS" className="h-24 md:h-44 object-contain mb-8 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />
                                 <p className="text-gray-200 max-w-2xl mx-auto text-lg md:text-xl mb-12 font-light leading-relaxed">Construímos mais do que casas. <br/><span className="text-brand-main font-semibold">Construímos histórias.</span></p>
@@ -489,7 +541,7 @@
                                     Cadastre-se para Simular <Icon name="arrow-right" className="w-5 h-5" />
                                 </button>
                             </div>
-                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full max-w-6xl mx-auto fade-in-up" style={{animationDelay: '0.2s'}}>
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full max-w-6xl mx-auto">
                                 <AnimatedCounter end={10} label="Anos de Mercado" />
                                 <AnimatedCounter end={100} label="Obras Entregues" />
                                 <AnimatedCounter end={15000} label="M² Construídos" suffix="+" />
@@ -539,7 +591,6 @@
 
                     <section id="villa-verde" className="py-16 md:py-24 relative">
                         <div className="container mx-auto px-4 md:px-6">
-                            {/* Bloco principal do Villa Verde */}
                             <div className="glass rounded-[2rem] p-6 md:p-12 relative overflow-hidden shadow-2xl border-white/10 mb-12">
                                 <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-b from-brand-main/10 to-transparent pointer-events-none"></div>
                                 <div className="flex flex-col lg:flex-row items-center gap-8 md:gap-12 relative z-10">
@@ -582,10 +633,7 @@
                                 </div>
                             </div>
 
-                            {/* Seção FAQ e Mapa dividida em duas colunas no Desktop */}
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-                                
-                                {/* Coluna FAQ */}
                                 <div>
                                     <div className="flex items-center gap-3 mb-6">
                                         <div className="w-10 h-10 rounded-full bg-brand-main/20 flex items-center justify-center border border-brand-main/30">
@@ -605,7 +653,6 @@
                                     </div>
                                 </div>
 
-                                {/* Coluna Mapa */}
                                 <div className="flex flex-col">
                                     <div className="flex items-center gap-3 mb-6">
                                         <div className="w-10 h-10 rounded-full bg-brand-main/20 flex items-center justify-center border border-brand-main/30">
@@ -615,7 +662,7 @@
                                     </div>
                                     <div className="glass rounded-2xl border border-white/10 overflow-hidden h-[400px] md:h-full min-h-[400px] shadow-lg relative group">
                                         <iframe 
-                                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31355.704288075736!2d-38.016335199999994!3d-11.1834244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x712a32c2869dfeb%3A0xc0f17173bca04a11!2sTobias%20Barreto%2C%20SE%2C%2048300-000!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr" 
+                                            src="https://maps.google.com/?q=Av.+Getúlio+Vargas,+600+-+Centro,+Tobias+Barreto,+SE&output=embed" 
                                             width="100%" 
                                             height="100%" 
                                             style={{ border: 0 }} 
@@ -625,9 +672,9 @@
                                             className="opacity-90 group-hover:opacity-100 transition-opacity duration-300"
                                             title="Mapa de Tobias Barreto"
                                         ></iframe>
-                                        <div className="absolute bottom-4 left-4 right-4 bg-brand-dark/90 backdrop-blur-md p-4 rounded-xl border border-brand-main/30 text-center">
+                                        <div className="absolute bottom-4 left-4 right-4 bg-brand-dark/90 backdrop-blur-md p-4 rounded-xl border border-brand-main/30 text-center pointer-events-none">
                                             <p className="text-white font-bold text-sm">Residencial Villa Verde</p>
-                                            <p className="text-white/70 text-xs mt-1">Região de Tobias Barreto - SE</p>
+                                            <p className="text-white/70 text-xs mt-1">Av. Getúlio Vargas, 600 - Centro, Tobias Barreto - SE</p>
                                         </div>
                                     </div>
                                 </div>
@@ -726,7 +773,7 @@
                                 </div>
                             </div>
                             <div className="text-center text-white/30 text-xs md:text-sm border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                                <p>&copy; 2024 Virtus Projetos. Todos os direitos reservados.</p>
+                                <p>© 2024 Virtus Projetos. Todos os direitos reservados.</p>
                                 <p className="opacity-50 hover:opacity-100 transition-opacity">Desenvolvido com tecnologia React & Tailwind</p>
                             </div>
                         </div>
