@@ -132,6 +132,28 @@
             animation: pulse-attention 2s infinite;
         }
 
+        /* ========== NOVO: WhatsApp button pulsante na tela inicial ========== */
+        @keyframes whatsapp-glow {
+            0%, 100% { 
+                transform: scale(1); 
+                box-shadow: 0 0 20px rgba(37, 211, 102, 0.4), 0 0 60px rgba(37, 211, 102, 0.1);
+            }
+            50% { 
+                transform: scale(1.02); 
+                box-shadow: 0 0 30px rgba(37, 211, 102, 0.6), 0 0 80px rgba(37, 211, 102, 0.2);
+            }
+        }
+        .whatsapp-hero-btn {
+            animation: whatsapp-glow 2.5s ease-in-out infinite;
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            border: 2px solid rgba(37, 211, 102, 0.5) !important;
+        }
+        .whatsapp-hero-btn:hover {
+            background: linear-gradient(135deg, #2be874 0%, #25D366 100%);
+            transform: scale(1.04) !important;
+        }
+        /* =================================================================== */
+
         .faq-content {
             transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
             max-height: 0;
@@ -209,6 +231,13 @@
             ]
         };
 
+        /* ========== Ícone SVG do WhatsApp inline ========== */
+        const WhatsAppIcon = ({ className = "w-7 h-7", fill = "white" }) => (
+            <svg className={className} viewBox="0 0 24 24" fill={fill} xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+        );
+
         const Icon = ({ name, className }) => {
             const iconRef = useRef(null);
             useEffect(() => {
@@ -219,7 +248,7 @@
             return <i ref={iconRef} data-lucide={name} className={className}></i>;
         };
 
-        // Componente da Tela Inicial (Link Tree)
+        // ========== TELA INICIAL MODIFICADA ==========
         const InitialScreen = ({ onEnterSite }) => {
             return (
                 <div className="min-h-screen flex flex-col justify-center items-center px-4 relative fade-in-up">
@@ -228,38 +257,41 @@
                     <img src={CONFIG.logoUrl} alt="Virtus" className="h-28 md:h-40 object-contain mb-12 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] z-10" />
                     
                     <div className="w-full max-w-md flex flex-col gap-4 z-10">
-                        {/* Botão 1: WhatsApp */}
-                        <a href={`https://wa.me/${CONFIG.whatsappNumber}?text=Olá! gostaria de comprar minha casa no Villa Verde.`} target="_blank" rel="noopener noreferrer" className="glass p-4 rounded-2xl flex items-center gap-5 hover:bg-white/10 transition-all hover:scale-[1.02] border border-white/10 shadow-lg group">
-                            <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center p-2 group-hover:bg-brand-whatsapp/20 transition-colors">
-                                {/* DICA PARA OS ÍCONES DO FLATICON: 
-                                    Para usar a imagem do Flaticon, apague a linha do <Icon ... /> abaixo e cole o seguinte código:
-                                    <img src="URL_DO_SEU_ICONE_AQUI" alt="WhatsApp" className="w-full h-full object-contain" /> 
-                                */}
-                                <Icon name="message-circle" className="w-7 h-7 text-brand-whatsapp" />
+                        
+                        {/* ★ BOTÃO 1: WHATSAPP — chamativo, grande, pulsante */}
+                        <a 
+                            href={`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent("Olá! Gostaria de saber mais sobre as casas do Villa Verde.")}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="whatsapp-hero-btn p-5 rounded-2xl flex items-center gap-5 transition-all border border-white/10 shadow-2xl group"
+                        >
+                            <div className="w-16 h-16 bg-white/15 rounded-xl flex items-center justify-center p-2.5 group-hover:bg-white/25 transition-colors shrink-0">
+                                <WhatsAppIcon className="w-9 h-9" fill="white" />
                             </div>
-                            <span className="font-bold text-white text-lg">Falar com nosso time</span>
+                            <div className="flex flex-col">
+                                <span className="font-bold text-white text-lg leading-tight">Conversar no WhatsApp</span>
+                                <span className="text-white/70 text-sm font-light mt-0.5">Tire suas dúvidas agora mesmo</span>
+                            </div>
                         </a>
 
                         {/* Botão 2: Site Completo */}
                         <button onClick={onEnterSite} className="glass p-4 rounded-2xl flex items-center gap-5 hover:bg-white/10 transition-all hover:scale-[1.02] border border-white/10 shadow-lg group text-left w-full">
                             <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center p-2 group-hover:bg-brand-main/20 transition-colors">
-                                {/* DICA PARA OS ÍCONES DO FLATICON: Substitua a linha abaixo caso queira a sua imagem */}
                                 <Icon name="layout" className="w-7 h-7 text-brand-main" />
                             </div>
-                            <span className="font-bold text-white text-lg">Nosso site com todas informações</span>
+                            <span className="font-bold text-white text-lg">Ver todas as informações</span>
                         </button>
 
                         {/* Botão 3: Maps */}
                         <a href="https://maps.google.com/?q=Av.+Getúlio+Vargas,+600+-+Centro,+Tobias+Barreto,+SE" target="_blank" rel="noopener noreferrer" className="glass p-4 rounded-2xl flex items-center gap-5 hover:bg-white/10 transition-all hover:scale-[1.02] border border-white/10 shadow-lg group">
                             <div className="w-14 h-14 bg-white/5 rounded-xl flex items-center justify-center p-2 group-hover:bg-blue-500/20 transition-colors">
-                                {/* DICA PARA OS ÍCONES DO FLATICON: Substitua a linha abaixo caso queira a sua imagem */}
                                 <Icon name="map-pin" className="w-7 h-7 text-blue-500" />
                             </div>
                             <span className="font-bold text-white text-lg">Nosso endereço</span>
                         </a>
                     </div>
                     
-                    <p className="absolute bottom-8 text-white/40 text-sm">© 2024 Virtus Projetos.</p>
+                    <p className="absolute bottom-8 text-white/40 text-sm">&copy; 2024 Virtus Projetos.</p>
                 </div>
             );
         };
@@ -293,7 +325,7 @@
                     rel="noopener noreferrer"
                     className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-brand-whatsapp hover:bg-green-600 text-white py-3 px-5 rounded-full shadow-2xl transition-all duration-300 hover:scale-105 float-animation group max-w-[90vw]"
                 >
-                    <Icon name="message-circle" className="w-8 h-8 md:w-6 md:h-6 fill-white" />
+                    <WhatsAppIcon className="w-8 h-8 md:w-6 md:h-6" fill="white" />
                     <span className="font-bold text-sm md:text-base whitespace-normal md:whitespace-nowrap leading-tight">
                         Quero comprar minha casa no <br className="md:hidden"/> Villa Verde
                     </span>
@@ -403,16 +435,15 @@
         };
 
         const App = () => {
-            // Controle da Tela Inicial
             const [showInitialScreen, setShowInitialScreen] = useState(true);
-            
-            // Controles do Site Principal
             const [isScrolled, setIsScrolled] = useState(false);
             const [menuOpen, setMenuOpen] = useState(false);
             const [isPdfModalOpen, setIsPdfModalOpen] = useState(false);
             const [pdfType, setPdfType] = useState('semSuite'); 
             const [openFaqIndex, setOpenFaqIndex] = useState(null); 
-            const [formData, setFormData] = useState({ nome: '', cpf: '', dataNascimento: '', renda: '', telefone: '', dependentes: 'Não', fgts: 'Não' });
+            
+            // ★ FORMULÁRIO SIMPLIFICADO: só nome e telefone
+            const [formData, setFormData] = useState({ nome: '', telefone: '' });
 
             useEffect(() => {
                 if (isPdfModalOpen) {
@@ -443,18 +474,17 @@
 
             const handleInputChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
+            // ★ SUBMIT SIMPLIFICADO: só nome e telefone → WhatsApp
             const handleFormSubmit = (e) => {
                 e.preventDefault();
-                const mensagem = `*Nova Simulação de Financiamento - Caixa* 🏡\n----------------------------------------\n*Nome:* ${formData.nome}\n*CPF:* ${formData.cpf}\n*Nascimento:* ${formData.dataNascimento}\n*Telefone:* ${formData.telefone}\n*Renda Bruta Familiar:* R$ ${formData.renda}\n*Possui Dependentes?* ${formData.dependentes}\n*3 anos de FGTS trabalhados?* ${formData.fgts}\n----------------------------------------\nOlá, vim pelo site e gostaria de saber o resultado da minha simulação!`;
+                const mensagem = `Olá! Meu nome é ${formData.nome} e tenho interesse nas casas do Villa Verde.\n\nMeu telefone: ${formData.telefone}\n\nGostaria de saber mais sobre as condições de financiamento!`;
                 window.open(`https://wa.me/${CONFIG.whatsappNumber}?text=${encodeURIComponent(mensagem)}`, '_blank');
             };
 
-            // Se o estado inicial for true, mostra a tela dos 3 botões
             if (showInitialScreen) {
                 return <InitialScreen onEnterSite={() => setShowInitialScreen(false)} />;
             }
 
-            // O retorno do site principal
             return (
                 <div className="min-h-screen flex flex-col font-sans overflow-x-hidden relative fade-in-up">
                     <FloatingWhatsApp />
@@ -511,7 +541,7 @@
                                 {['Home', 'Sobre', 'Villa Verde', 'Galeria', 'Diferenciais'].map((item) => (
                                     <button key={item} onClick={() => scrollToSection(item.toLowerCase().replace(' ', '-'))} className="px-4 py-2 text-white/80 hover:text-brand-main hover:bg-white/5 rounded-full transition-all text-xs uppercase tracking-wider font-bold">{item}</button>
                                 ))}
-                                <button onClick={() => scrollToSection('contato')} className="ml-2 px-5 py-2 bg-brand-main text-white rounded-full text-xs uppercase tracking-wider font-bold shadow-lg hover:bg-brand-light hover:text-brand-dark transition-all">Fazer Simulação</button>
+                                <button onClick={() => scrollToSection('contato')} className="ml-2 px-5 py-2 bg-brand-main text-white rounded-full text-xs uppercase tracking-wider font-bold shadow-lg hover:bg-brand-light hover:text-brand-dark transition-all">Fale Conosco</button>
                             </div>
 
                             <button className="md:hidden text-white p-2 glass rounded-lg" onClick={() => setMenuOpen(!menuOpen)}>
@@ -538,7 +568,7 @@
                                 <img src={CONFIG.logoUrl} alt="VIRTUS" className="h-24 md:h-44 object-contain mb-8 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]" />
                                 <p className="text-gray-200 max-w-2xl mx-auto text-lg md:text-xl mb-12 font-light leading-relaxed">Construímos mais do que casas. <br/><span className="text-brand-main font-semibold">Construímos histórias.</span></p>
                                 <button onClick={() => scrollToSection('contato')} className="bg-brand-main hover:bg-brand-light text-white text-lg px-8 py-4 rounded-full font-bold shadow-xl hover:shadow-brand-main/30 hover:scale-105 transition-all flex items-center gap-3 mx-auto">
-                                    Cadastre-se para Simular <Icon name="arrow-right" className="w-5 h-5" />
+                                    Fale Conosco <Icon name="arrow-right" className="w-5 h-5" />
                                 </button>
                             </div>
                             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 w-full max-w-6xl mx-auto">
@@ -619,7 +649,7 @@
                                         </div>
                                         <div className="flex flex-col sm:flex-row gap-4">
                                             <button onClick={() => scrollToSection('contato')} className="flex-1 bg-brand-main hover:bg-brand-light text-white px-6 py-4 rounded-xl font-bold shadow-lg hover:shadow-brand-main/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
-                                                Simular Financiamento <Icon name="calculator" className="w-5 h-5" />
+                                                Fale Conosco <Icon name="message-circle" className="w-5 h-5" />
                                             </button>
                                             
                                             <button 
@@ -703,6 +733,7 @@
                         </div>
                     </section>
 
+                    {/* ========== FOOTER COM FORMULÁRIO SIMPLIFICADO ========== */}
                     <footer id="contato" className="glass-dark border-t border-white/10 pt-16 pb-8 mt-12 relative overflow-hidden">
                         <div className="absolute top-0 right-[-10%] w-[300px] h-[300px] bg-brand-main rounded-full mix-blend-screen filter blur-[150px] opacity-10"></div>
                         <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -732,48 +763,61 @@
                                     </div>
                                 </div>
 
+                                {/* ★ FORMULÁRIO NOVO: só nome + telefone → WhatsApp */}
                                 <div className="w-full">
                                     <div className="flex items-center justify-between mb-4">
                                         <div>
-                                            <h5 className="text-2xl font-bold text-white">Simulação Caixa</h5>
-                                            <p className="text-brand-light text-sm font-medium mt-1">Descubra as condições para o seu perfil</p>
+                                            <h5 className="text-2xl font-bold text-white">Quero minha casa!</h5>
+                                            <p className="text-brand-light text-sm font-medium mt-1">Deixe seu contato e fale com a gente agora</p>
                                         </div>
-                                        <Icon name="calculator" className="w-8 h-8 text-brand-main opacity-50" />
+                                        <WhatsAppIcon className="w-8 h-8 opacity-50" fill="#25D366" />
                                     </div>
                                     <div className="glass rounded-3xl p-6 md:p-8 border border-white/20 shadow-2xl relative">
+                                        <div className="text-center mb-6">
+                                            <div className="inline-flex items-center gap-2 bg-brand-whatsapp/10 border border-brand-whatsapp/20 text-brand-whatsapp px-4 py-2 rounded-full text-sm font-medium">
+                                                <WhatsAppIcon className="w-4 h-4" fill="#25D366" />
+                                                Resposta rápida pelo WhatsApp
+                                            </div>
+                                        </div>
                                         <form onSubmit={handleFormSubmit} className="space-y-5">
                                             <div className="space-y-1">
-                                                <label className="text-sm font-medium text-white/80 ml-1">Nome Completo</label>
-                                                <input required type="text" name="nome" value={formData.nome} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input placeholder:text-white/30" placeholder="Digite seu nome completo" />
+                                                <label className="text-sm font-medium text-white/80 ml-1">Seu nome</label>
+                                                <input 
+                                                    required 
+                                                    type="text" 
+                                                    name="nome" 
+                                                    value={formData.nome} 
+                                                    onChange={handleInputChange} 
+                                                    className="w-full px-4 py-4 rounded-xl glass-input placeholder:text-white/30 text-lg" 
+                                                    placeholder="Como podemos te chamar?" 
+                                                />
                                             </div>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="space-y-1"><label className="text-sm font-medium text-white/80 ml-1">CPF</label><input required type="text" name="cpf" value={formData.cpf} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input placeholder:text-white/30" placeholder="000.000.000-00" /></div>
-                                                <div className="space-y-1"><label className="text-sm font-medium text-white/80 ml-1">Data de Nascimento</label><input required type="date" name="dataNascimento" value={formData.dataNascimento} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input text-white/80" /></div>
+                                            <div className="space-y-1">
+                                                <label className="text-sm font-medium text-white/80 ml-1">Seu telefone (WhatsApp)</label>
+                                                <input 
+                                                    required 
+                                                    type="tel" 
+                                                    name="telefone" 
+                                                    value={formData.telefone} 
+                                                    onChange={handleInputChange} 
+                                                    className="w-full px-4 py-4 rounded-xl glass-input placeholder:text-white/30 text-lg" 
+                                                    placeholder="(00) 00000-0000" 
+                                                />
                                             </div>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="space-y-1"><label className="text-sm font-medium text-white/80 ml-1">Renda Bruta Familiar (R$)</label><input required type="number" name="renda" value={formData.renda} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input placeholder:text-white/30" placeholder="Ex: 3500,00" /></div>
-                                                <div className="space-y-1"><label className="text-sm font-medium text-white/80 ml-1">Telefone / WhatsApp</label><input required type="text" name="telefone" value={formData.telefone} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input placeholder:text-white/30" placeholder="(00) 00000-0000" /></div>
-                                            </div>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="space-y-1">
-                                                    <label className="text-sm font-medium text-white/80 ml-1">Possui Dependentes?</label>
-                                                    <select name="dependentes" value={formData.dependentes} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input cursor-pointer"><option value="Não">Não</option><option value="Sim">Sim</option></select>
-                                                </div>
-                                                <div className="space-y-1">
-                                                    <label className="text-sm font-medium text-white/80 ml-1">3 Anos de FGTS?</label>
-                                                    <select name="fgts" value={formData.fgts} onChange={handleInputChange} className="w-full px-4 py-3 rounded-xl glass-input cursor-pointer"><option value="Não">Não</option><option value="Sim">Sim</option></select>
-                                                </div>
-                                            </div>
-                                            <button type="submit" className="w-full mt-4 bg-brand-main hover:bg-green-500 text-white py-4 rounded-xl font-bold shadow-lg hover:shadow-green-500/30 transition-all flex items-center justify-center gap-2 group">
-                                                <Icon name="send" className="w-5 h-5 group-hover:translate-x-1 transition-transform" /> Enviar p/ WhatsApp
+                                            <button 
+                                                type="submit" 
+                                                className="w-full mt-2 text-white py-4 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-3 group text-lg whatsapp-hero-btn"
+                                            >
+                                                <WhatsAppIcon className="w-6 h-6 group-hover:scale-110 transition-transform" fill="white" />
+                                                Conversar no WhatsApp
                                             </button>
-                                            <p className="text-center text-xs text-white/50 mt-2">Seus dados serão enviados diretamente para nossa equipe.</p>
+                                            <p className="text-center text-xs text-white/50 mt-2">Ao clicar, você será direcionado para o nosso WhatsApp.</p>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                             <div className="text-center text-white/30 text-xs md:text-sm border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                                <p>© 2024 Virtus Projetos. Todos os direitos reservados.</p>
+                                <p>&copy; 2024 Virtus Projetos. Todos os direitos reservados.</p>
                                 <p className="opacity-50 hover:opacity-100 transition-opacity">Desenvolvido com tecnologia React & Tailwind</p>
                             </div>
                         </div>
