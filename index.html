@@ -132,7 +132,6 @@
             animation: pulse-attention 2s infinite;
         }
 
-        /* ========== NOVO: WhatsApp button pulsante na tela inicial ========== */
         @keyframes whatsapp-glow {
             0%, 100% { 
                 transform: scale(1); 
@@ -152,7 +151,6 @@
             background: linear-gradient(135deg, #2be874 0%, #25D366 100%);
             transform: scale(1.04) !important;
         }
-        /* =================================================================== */
 
         .faq-content {
             transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
@@ -164,17 +162,16 @@
             max-height: 500px;
             opacity: 1;
         }
-        <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18052132945">
-</script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'AW-18052132945');
-</script>
     </style>
+
+    <!-- Google tag (gtag.js) - Google Ads -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18052132945"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-18052132945');
+    </script>
 </head>
 <body>
 
@@ -452,7 +449,6 @@
             const [pdfType, setPdfType] = useState('semSuite'); 
             const [openFaqIndex, setOpenFaqIndex] = useState(null); 
             
-            // ★ FORMULÁRIO SIMPLIFICADO: só nome e telefone
             const [formData, setFormData] = useState({ nome: '', telefone: '' });
 
             useEffect(() => {
@@ -484,7 +480,6 @@
 
             const handleInputChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
-            // ★ SUBMIT SIMPLIFICADO: só nome e telefone → WhatsApp
             const handleFormSubmit = (e) => {
                 e.preventDefault();
                 const mensagem = `Olá! Meu nome é ${formData.nome} e tenho interesse nas casas do Villa Verde.\n\nMeu telefone: ${formData.telefone}\n\nGostaria de saber mais sobre as condições de financiamento!`;
@@ -743,7 +738,6 @@
                         </div>
                     </section>
 
-                    {/* ========== FOOTER COM FORMULÁRIO SIMPLIFICADO ========== */}
                     <footer id="contato" className="glass-dark border-t border-white/10 pt-16 pb-8 mt-12 relative overflow-hidden">
                         <div className="absolute top-0 right-[-10%] w-[300px] h-[300px] bg-brand-main rounded-full mix-blend-screen filter blur-[150px] opacity-10"></div>
                         <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -773,7 +767,6 @@
                                     </div>
                                 </div>
 
-                                {/* ★ FORMULÁRIO NOVO: só nome + telefone → WhatsApp */}
                                 <div className="w-full">
                                     <div className="flex items-center justify-between mb-4">
                                         <div>
